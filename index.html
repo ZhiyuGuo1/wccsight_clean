@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="WCCSight — Integrating satellite imagery, Google Street View, and vision-language models to monitor winter cover crops across the U.S. Midwest. Roepke Scholar research by Zhiyu Guo, UIUC." />
+  <title>WCCSight — Winter Cover Crop Monitoring | Zhiyu Guo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#top" class="nav-logo">WCCSight</a>
+    <div class="nav-links">
+      <a href="#background">Background</a>
+      <a href="#pipeline">Pipeline</a>
+      <a href="#results">Results</a>
+      <a href="#about">About</a>
+    </div>
+    <button class="nav-burger" id="burger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-mobile" id="navMobile">
+    <a href="#background" onclick="closeMobile()">Background</a>
+    <a href="#pipeline"   onclick="closeMobile()">Pipeline</a>
+    <a href="#results"    onclick="closeMobile()">Results</a>
+    <a href="#about"      onclick="closeMobile()">About</a>
+  </div>
+</nav>
+
+<div class="site" id="top">
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="container">
+    <p class="eyebrow">
+      <span class="eyebrow-bar"></span>
+      Roepke Scholar &nbsp;·&nbsp; UIUC RS Space-Time Innovation Lab
+    </p>
+    <h1>
+      Integrating Satellite, Street View &amp;<br/>
+      <em>Visual Language Models</em><br/>
+      for Winter Cover Crop Monitoring
+    </h1>
+    <p class="hero-sub">
+      A scalable pipeline for large-scale ground truth generation across the U.S. Midwest
+    </p>
+    <div class="chip-row">
+      <span class="chip chip-accent">WCCSight Project</span>
+      <span class="chip">Zhiyu Guo · UIUC 2025</span>
+      <span class="chip">Advised by Dr. Chunyuan Diao</span>
+      <span class="chip">2025–2026 Roepke Scholar</span>
+      <span class="chip">April 10, 2026</span>
+    </div>
+    <button class="scroll-cue" onclick="document.getElementById('background').scrollIntoView({behavior:'smooth'})">
+      Explore ↓
+    </button>
+  </div>
+</section>
+
+<!-- ═══ BACKGROUND ═══ -->
+<section class="section" id="background">
+  <div class="container">
+    <p class="label">Background</p>
+    <h2>What grows in Midwest fields during the off-season?</h2>
+
+    <div class="two-col align-start">
+      <div>
+        <p>Most cash crops in the U.S. Midwest — corn and soybeans — are grown between April and October. But what happens to these fields during the remaining half of the year?</p>
+        <p style="margin-top:.9rem">Some farmers plant <strong>winter cover crops (WCC)</strong> after harvest, which play a critical role in soil conservation, erosion control, and nutrient management. The challenge: it is extremely difficult to quantify how widely they are adopted, or which fields have them at all.</p>
+      </div>
+      <div>
+        <figure>
+          <img src="images/usda-crop-progress-illinois-2025.jpg"
+               alt="USDA NASS Crop Progress and Condition: Corn in Illinois 2025 — showing planting through harvest cycle April–November"
+               class="img-border" />
+          <figcaption>USDA NASS (2025): corn in Illinois follows an April–November growth cycle, leaving a long off-season window (Oct–May) when cover crops can establish.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <!-- Cover crop benefits -->
+    <div class="full-figure" style="margin-top:2.5rem">
+      <figure>
+        <img src="images/cover-crop-benefits.jpg"
+             alt="Cover crop functional groups: (A) legumes fix nitrogen and phosphorus; (B) brassicas reduce compaction via biofumigation; (C) cereals suppress weeds and reduce erosion"
+             class="img-border img-wide" />
+        <figcaption>
+          Cover crops provide distinct soil health benefits by functional group —
+          <strong>(A) Legumes</strong> fix atmospheric N and facilitate phosphorus uptake;
+          <strong>(B) Brassicas</strong> reduce soil compaction and suppress pathogens via biofumigation;
+          <strong>(C) Cereals</strong> scavenge nutrients, suppress weed germination, and reduce erosion.
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ THE PROBLEM ═══ -->
+<section class="section section-alt">
+  <div class="container">
+    <p class="label">The Problem</p>
+    <h2>Ground truth is the critical bottleneck</h2>
+    <p class="lead">Satellite imagery can detect green vegetation during the off-season — but cannot distinguish cover crops from weeds or volunteer crops. Reliable ground truth is essential, and current approaches fall short in three key ways.</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <span class="card-num">01</span>
+        <h3>Ground truth scarcity</h3>
+        <p>Field surveys are expensive. Many existing datasets are restricted, geographically limited, or not publicly available — creating a major barrier for training scalable models.</p>
+      </div>
+      <div class="card">
+        <span class="card-num">02</span>
+        <h3>Limited spatial coverage</h3>
+        <p>Available labels often exist only for certain states, years, or field types — leading to training bias and poor generalization across the diverse Midwest landscape.</p>
+      </div>
+      <div class="card">
+        <span class="card-num">03</span>
+        <h3>Label uncertainty</h3>
+        <p>Even available ground truth can contain errors from reporting mistakes, timing mismatches, or inherent ambiguity in defining cover crop presence versus absence.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PIPELINE ═══ -->
+<section class="section" id="pipeline">
+  <div class="container">
+    <p class="label">The WCCSight Pipeline</p>
+    <h2>Google Street View as scalable ground truth</h2>
+    <p class="lead">WCCSight introduces a five-step pipeline that uses Google Street View as a low-cost, geographically broad alternative ground truth source — paired with vision-language models for automated annotation at scale.</p>
+
+    <!-- Workflow diagram part 1 -->
+    <figure class="full-figure" style="margin-top:2rem">
+      <img src="images/wccsight-workflow-part1.jpg"
+           alt="WCCSight pipeline steps 1–3: retrieve GSV metadata by lat/lon/month/year/heading → filter by Crop Sequence Boundary (corn-soy rotation) → temporally filter to off-season Oct–May"
+           class="img-border img-wide" />
+      <figcaption>
+        <strong>Steps 1–3:</strong> Retrieve Google Street View metadata using GPS coordinates, heading, month, and year &rarr; Filter to fields within USDA Crop Sequence Boundaries in corn–soybean rotation &rarr; Temporally filter to the off-season window (October–May).
+      </figcaption>
+    </figure>
+
+    <!-- Workflow diagram part 2 -->
+    <figure class="full-figure" style="margin-top:1.5rem">
+      <img src="images/wccsight-workflow-part2.jpg"
+           alt="WCCSight pipeline steps 4–5: road-left and road-right street view images fed to Gemini and ChatGPT VLMs → output cover crop label (e.g. Legume)"
+           class="img-border img-wide" />
+      <figcaption>
+        <strong>Steps 4–5:</strong> Download paired road-left and road-right field-view images from each qualifying GPS location &rarr; Pass to Gemini and GPT-4o for zero-shot cover crop classification (presence, functional group, confidence, reasoning).
+      </figcaption>
+    </figure>
+
+    <!-- Crop sequence boundaries detail -->
+    <div class="two-col align-start" style="margin-top:2.5rem">
+      <div>
+        <h3 class="subhead">Crop Sequence Boundaries</h3>
+        <p>The USDA Crop Sequence Boundaries (CSB) dataset identifies fields in corn–soybean rotation at the parcel level. WCCSight uses CSB to restrict sampling to the target population — fields most likely to have adopted winter cover crops after corn or soybean harvest.</p>
+        <p style="margin-top:.9rem">Black outlines show all field boundaries; <span style="color:#0ff;font-weight:500">cyan</span> highlights fields flagged as in corn–soy rotation — the subset queried for off-season GSV imagery.</p>
+      </div>
+      <figure>
+        <img src="images/crop-sequence-boundaries-map.jpg"
+             alt="USDA Crop Sequence Boundaries map showing corn-soybean rotation fields (cyan outlines) within the study region"
+             class="img-border" />
+        <figcaption>Crop Sequence Boundaries at field level. Cyan = corn–soybean rotation fields selected for GSV sampling. (Chen, 2025)</figcaption>
+      </figure>
+    </div>
+
+    <!-- Cover crop class examples -->
+    <div class="full-figure" style="margin-top:2.5rem">
+      <h3 class="subhead">What the models classify</h3>
+      <p style="margin-bottom:1.25rem;max-width:640px;">Each street view image is classified into one of three functional groups. These are real Google Street View field photographs used in the project.</p>
+      <figure>
+        <img src="images/cover-crop-class-examples-new.jpg"
+             alt="Side-by-side GSV field examples: Cereal (tall thin grass), Legume (dense broad-leafed green carpet), Others (sparse weeds and crop residue)"
+             class="img-border img-wide" />
+        <figcaption>
+          Real Google Street View imagery from Midwest fields during the off-season.
+          <strong>Cereal</strong> — dense upright grass (cereal rye, winter wheat);
+          <strong>Legume</strong> — dense broad-leafed carpet (clover, alfalfa);
+          <strong>Others</strong> — weeds, bare soil, or crop residue with no intentional cover crop.
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ VLM EXAMPLES ═══ -->
+<section class="section section-green" id="results">
+  <div class="container">
+    <p class="label">VLM Output Examples</p>
+    <h2>How the models interpret a field</h2>
+    <p class="lead">Gemini and GPT-4o return structured, interpretable responses — cover crop presence, functional group, confidence level, and a full geographic justification. This makes annotation both scalable and auditable.</p>
+
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="showTab(0,this)">Legume</button>
+      <button class="tab-btn"        onclick="showTab(1,this)">Cereal</button>
+      <button class="tab-btn"        onclick="showTab(2,this)">No cover crop</button>
+    </div>
+
+    <div id="tab-0" class="vlm-card">
+      <div class="vlm-tags">
+        <span class="tag tag-legume">Legume</span>
+        <span class="tag tag-conf">High confidence</span>
+      </div>
+      <div class="vlm-fields">
+        <div class="vlm-row"><span class="vl">Cover crop present</span><span class="vv">Yes</span></div>
+        <div class="vlm-row"><span class="vl">Functional group</span><span class="vv">Legume</span></div>
+        <div class="vlm-row"><span class="vl">Location / Date</span><span class="vv">Washington County, WI — May 2024</span></div>
+      </div>
+      <p class="vlm-quote">"The field displays a dense, uniform green carpet with low, rounded trifoliate leaf structure characteristic of legumes such as alfalfa or red clover. In southern Wisconsin, May is peak vegetative growth for winter-hardy legumes. Red clover is commonly frost-seeded into wheat or interseeded into corn in this region, thriving by mid-spring."</p>
+    </div>
+
+    <div id="tab-1" class="vlm-card" style="display:none">
+      <div class="vlm-tags">
+        <span class="tag tag-cereal">Cereal / Grass</span>
+        <span class="tag tag-conf">High confidence</span>
+      </div>
+      <div class="vlm-fields">
+        <div class="vlm-row"><span class="vl">Cover crop present</span><span class="vv">Yes</span></div>
+        <div class="vlm-row"><span class="vl">Functional group</span><span class="vv">Cereal (Grass)</span></div>
+        <div class="vlm-row"><span class="vl">Location / Date</span><span class="vv">Northern Ohio — May 2025</span></div>
+      </div>
+      <p class="vlm-quote">"The image shows a very dense, uniform green field of cereal grain. In May 2025 in northern Ohio, this level of biomass is consistent with either winter wheat or cereal rye. Given the height and density without visible seed heads, it is likely a cover crop nearing termination or a winter small grain."</p>
+    </div>
+
+    <div id="tab-2" class="vlm-card" style="display:none">
+      <div class="vlm-tags">
+        <span class="tag tag-other">No Cover Crop</span>
+        <span class="tag tag-conf">High confidence</span>
+      </div>
+      <div class="vlm-fields">
+        <div class="vlm-row"><span class="vl">Cover crop present</span><span class="vv">No</span></div>
+        <div class="vlm-row"><span class="vl">Functional group</span><span class="vv">Other / Bare soil</span></div>
+        <div class="vlm-row"><span class="vl">Location / Date</span><span class="vv">Central Illinois — March 2024</span></div>
+      </div>
+      <p class="vlm-quote">"The field shows exposed dark soil with minimal vegetation cover and remnant corn crop residue. No established green ground cover consistent with a winter cover crop is present. In central Illinois in March, a bare field at this stage suggests no cover crop was seeded after the prior harvest."</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ VLM PERFORMANCE ═══ -->
+<section class="section">
+  <div class="container">
+    <p class="label">Model Performance</p>
+    <h2>Both Gemini and GPT-4o achieve strong zero-shot accuracy</h2>
+    <p class="lead">Against ~150 manually labeled ground-truth images (50 per class), both VLMs demonstrate high diagonal accuracy. Neither model ever misclassifies "Others" as "Legume" — the most critical error to avoid in practice.</p>
+
+    <div class="matrix-row">
+      <figure class="matrix-fig">
+        <img src="images/gemini-confusion-matrix.jpg"
+             alt="Gemini vs Ground Truth confusion matrix: Others 44/50, Legume 38/50, Grass 42/50 correct"
+             class="img-border" />
+        <figcaption>
+          <strong>Gemini</strong> &nbsp;|&nbsp;
+          Others: 44/50 &nbsp;·&nbsp; Legume: 38/50 &nbsp;·&nbsp; Grass: 42/50
+        </figcaption>
+      </figure>
+      <figure class="matrix-fig">
+        <img src="images/gpt-confusion-matrix.jpg"
+             alt="GPT-4o vs Ground Truth confusion matrix: Others 48/50, Legume 35/50, Grass 44/50 correct"
+             class="img-border" />
+        <figcaption>
+          <strong>GPT-4o</strong> &nbsp;|&nbsp;
+          Others: 48/50 &nbsp;·&nbsp; Legume: 35/50 &nbsp;·&nbsp; Grass: 44/50
+        </figcaption>
+      </figure>
+    </div>
+
+    <div class="insight-box">
+      Both models excel at identifying "Others" (no cover crop) with near-perfect accuracy — the most important class for avoiding false positives. Legume classification shows slightly more confusion, understandable given visual similarity with some broadleaf weeds at certain growth stages. Using inter-model agreement as a confidence filter can further reduce noise.
+    </div>
+  </div>
+</section>
+
+<!-- ═══ DATASET SCALE ═══ -->
+<section class="section section-alt">
+  <div class="container">
+    <p class="label">Dataset Scale</p>
+    <h2>A large-scale labeled cover crop database</h2>
+    <p class="lead">~4,000 manually annotated GSV images were compiled to train a deep learning classifier, then applied to the full off-season field-view database — spanning multiple Midwest states and seasons.</p>
+
+    <div class="stats-row">
+      <div class="stat"><span class="stat-n">7,732</span><span class="stat-l">Cereal locations</span></div>
+      <div class="stat"><span class="stat-n">1,777</span><span class="stat-l">Legume locations</span></div>
+      <div class="stat"><span class="stat-n">55,374</span><span class="stat-l">No cover crop</span></div>
+      <div class="stat"><span class="stat-n">~4,000</span><span class="stat-l">Manually labeled for training</span></div>
+    </div>
+
+    <figure class="full-figure" style="margin-top:2rem">
+      <img src="images/midwest-cover-crop-distribution.jpg"
+           alt="Spatial distribution of classified GSV points across the Midwest: Cereal (n=7,732 green dots), Legume (n=1,777 purple dots), Others (n=55,374 gray dots)"
+           class="img-border img-wide" />
+      <figcaption>
+        Geographic distribution of classified GSV observations across the Midwest.
+        <span class="legend-dot" style="background:#3a8a3a"></span><strong>Cereal (n=7,732)</strong> — concentrated in the eastern Corn Belt (Indiana, Ohio, Illinois).
+        <span class="legend-dot" style="background:#7b52ab"></span><strong>Legume (n=1,777)</strong> — clustered in Wisconsin, Illinois, and Iowa.
+        <span class="legend-dot" style="background:#888"></span><strong>Others (n=55,374)</strong> — distributed broadly across the full region.
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ═══ CONTRIBUTIONS ═══ -->
+<section class="section" id="about">
+  <div class="container">
+    <p class="label">My Contributions</p>
+    <h2>What I built and contributed to WCCSight</h2>
+
+    <div class="contrib-grid">
+      <div class="contrib">
+        <div class="contrib-dot"></div>
+        <h3>Manual image interpretation</h3>
+        <p>Reviewed thousands of off-season farmland images from Google Street View, identifying winter cover crops and distinguishing vegetation types (cereal, legume, other) from bare soil, crop residue, and weeds to build the labeled training dataset.</p>
+      </div>
+      <div class="contrib">
+        <div class="contrib-dot"></div>
+        <h3>GSV–NDVI cross-validation</h3>
+        <p>Developed and ran automated scripts to retrieve paired Sentinel-2 NDVI time-series and street view images for cross-validation — comparing satellite signals with ground-level observations across regions, seasons, and years.</p>
+      </div>
+      <div class="contrib">
+        <div class="contrib-dot"></div>
+        <h3>Quality control &amp; labeling consistency</h3>
+        <p>Flagged ambiguous or low-confidence samples for expert review, improving annotation consistency across diverse geographic conditions to produce a cleaner training dataset for downstream deep learning models.</p>
+      </div>
+      <div class="contrib">
+        <div class="contrib-dot"></div>
+        <h3>Model evaluation support</h3>
+        <p>Prepared annotated test samples for VLM zero-shot evaluation, contributed to confusion matrix analysis, and helped organize the labeled database structure for downstream classification pipeline development.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FUTURE WORK ═══ -->
+<section class="section section-alt">
+  <div class="container">
+    <p class="label">Future Directions</p>
+    <h2>What's next for WCCSight</h2>
+
+    <div class="future-list">
+      <div class="future-item">
+        <span class="future-arrow">→</span>
+        <div><strong>Active learning</strong> — Prioritize samples with model disagreement or low confidence for expert annotation; fine-tune VLMs specifically for cover crop identification from street-view imagery to reduce zero-shot errors.</div>
+      </div>
+      <div class="future-item">
+        <span class="future-arrow">→</span>
+        <div><strong>Geographic expansion</strong> — Extend analysis to additional Midwest states and multi-year time series to improve generalization across diverse climates, soil types, and farming practices.</div>
+      </div>
+      <div class="future-item">
+        <span class="future-arrow">→</span>
+        <div><strong>Ensemble strategies</strong> — Leverage Gemini–GPT inter-model agreement as a confidence signal; explore fine-tuning on high-consensus samples to reduce label noise in the training database.</div>
+      </div>
+      <div class="future-item">
+        <span class="future-arrow">→</span>
+        <div><strong>Operational monitoring</strong> — Integrate the full WCCSight workflow into scalable, continuously updated cover crop monitoring pipelines for broad Midwest agricultural applications and policy reporting.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-left">
+      <p class="footer-name">Zhiyu Guo</p>
+      <p class="footer-meta">
+        Geography B.S. / Sociology B.A. &nbsp;·&nbsp; UIUC 2025<br />
+        2025–2026 Howard &amp; Ruth Roepke Undergraduate Research Scholar<br />
+        Supervised by Dr. Chunyuan Diao &nbsp;·&nbsp; RS Space-Time Innovation Lab, UIUC<br />
+        Collaborator: Zhijie "ZJ" Zhou (PhD candidate)<br />
+        Incoming graduate student &nbsp;·&nbsp; University of Pennsylvania
+      </p>
+    </div>
+    <div class="footer-right">
+      <div class="footer-link"><span class="fdot"></span>RS Space-Time Innovation Lab, UIUC</div>
+      <div class="footer-link"><span class="fdot"></span>Roepke Scholar Colloquium · Apr 10, 2026</div>
+      <div class="footer-link"><span class="fdot"></span>WCCSight · Cover Crop Monitoring Pipeline</div>
+      <div class="footer-link"><span class="fdot"></span>Data: USDA NASS · Google Street View · Sentinel-2</div>
+    </div>
+  </div>
+</footer>
+
+</div><!-- .site -->
+<script src="main.js"></script>
+</body>
+</html>
